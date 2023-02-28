@@ -2,14 +2,16 @@ import enums.Coin;
 import enums.Product;
 import exceptions.InsufficientChargeException;
 import exceptions.NotFoundProductException;
+import exceptions.NotSufficientNumberOfCoinsException;
 import exceptions.ProductSoldOutException;
 import models.VendingMachine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws ProductSoldOutException, NotFoundProductException, InsufficientChargeException {
+    public static void main(String[] args) throws ProductSoldOutException, NotFoundProductException, InsufficientChargeException, NotSufficientNumberOfCoinsException {
         HashMap<Coin,Integer> coins=new HashMap<> ();
         coins.put (Coin.TEN_DAM,3);
         coins.put (Coin.HALF_DAM,3);
@@ -29,7 +31,14 @@ public class Main {
 
         VendingMachine vendingMachine2 = new VendingMachine (products,coins);
 
-        //display products and enter coins
+        List<Coin> listCoins=new ArrayList<> ();
+        listCoins.add (Coin.TWO_DAM);
+        listCoins.add (Coin.TWO_DAM);/*
+        listCoins.add (Coin.ONE_DAM);
+        listCoins.add (Coin.FIVE_DAM);*/
+        System.out.println ("total= "+vendingMachine2.buy (2,listCoins).toString ());
+
+       /* //display products and enter coins
         vendingMachine2.display ();
 
 
@@ -42,7 +51,7 @@ public class Main {
 
         System.out.println ("------------------------------------------------");
         System.out.println ("your rest coins is");
-        listCoins.forEach (coin -> System.out.println (""+coin.getValue ()));
+        listCoins.forEach (coin -> System.out.println (""+coin.getValue ()));*/
 
     }
     public static double[] convertStringToInt(String[] str){

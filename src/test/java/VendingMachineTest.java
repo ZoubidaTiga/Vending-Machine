@@ -2,6 +2,7 @@ import enums.Coin;
 import enums.Product;
 import exceptions.InsufficientChargeException;
 import exceptions.NotFoundProductException;
+import exceptions.NotSufficientNumberOfCoinsException;
 import exceptions.ProductSoldOutException;
 import models.VendingMachine;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,30 +39,42 @@ public class VendingMachineTest {
         vendingMachine = new VendingMachine (products,coins);
     }
 
-    @Test
+     @Test
     public void givenIncorrectProduct_whenBuy_thenTrowsNotFoundProductException(){
-        //{2,3,4} -> {2 coinHalf_DAM,3 coinHalf_DAM,4 coinHalf_DAM}
-        assertThrows(NotFoundProductException.class,() -> vendingMachine.buy (9, new double[]{2, 3, 4}));
+         List<Coin> listCoins=new ArrayList<> ();
+         listCoins.add (Coin.TWO_DAM);
+         listCoins.add (Coin.TWO_DAM);
+         assertThrows(NotFoundProductException.class,() -> vendingMachine.buy (9,listCoins));
     }
-
     @Test
-    public void givenIncorrectProduct_whenBuy_thenTrowsInsufficientChargeException(){
-        //{2,3,4,0,0} -> {2 coinHalf_DAM, 3 coinOne_DAM, 4 coinTwo_DAM, 0 coinFive_DAM, 0 coinTenDAM}
-        assertThrows(InsufficientChargeException.class,() -> vendingMachine.buy (5, new double[]{2, 3, 4, 0, 0}));
+    public void givenIncorrectCoins_whenBuy_thenTrowsInsufficientChargeException(){
+        List<Coin> listCoins=new ArrayList<> ();
+        listCoins.add (Coin.TWO_DAM);
+        listCoins.add (Coin.TWO_DAM);
+        listCoins.add (Coin.ONE_DAM);
+        listCoins.add (Coin.FIVE_DAM);
+        assertThrows(InsufficientChargeException.class,() -> vendingMachine.buy (5, listCoins));
     }
 
     @Test
     public void givenIncorrectProduct_whenBuy_thenTrowsProductSoldOutException(){
         vendingMachine.getProducts ().replace (Product.MIRENDINA,0);
-        assertThrows(ProductSoldOutException.class,() -> vendingMachine.buy (1, new double[]{2, 3, 4, 0, 0}));
+        List<Coin> listCoins=new ArrayList<> ();
+        listCoins.add (Coin.TWO_DAM);
+        listCoins.add (Coin.TWO_DAM);
+        assertThrows(ProductSoldOutException.class,() -> vendingMachine.buy (1, listCoins));
     }
 
     @Test
-    public void givenCorrectCoinsAndProduct_whenBuy_thenSucceed() throws ProductSoldOutException, NotFoundProductException, InsufficientChargeException {
-        //{2,4,5,0,0} -> 15DAM which means 12 DAM on rest
+    public void givenCorrectCoinsAndProduct_whenBuy_thenSucceed() throws ProductSoldOutException, NotFoundProductException, InsufficientChargeException, NotSufficientNumberOfCoinsException {
+        List<Coin> listCoins=new ArrayList<> ();
+        listCoins.add (Coin.TWO_DAM);
+        listCoins.add (Coin.TWO_DAM);
+        listCoins.add (Coin.ONE_DAM);
+        listCoins.add (Coin.FIVE_DAM);
         List<Coin> expectedCoins=new ArrayList<> ();
-        expectedCoins.add (Coin.TEN_DAM); expectedCoins.add (Coin.TWO_DAM);
-        assertEquals (expectedCoins,vendingMachine.buy (2,2,4,5,0,0));
+        expectedCoins.add (Coin.FIVE_DAM); expectedCoins.add (Coin.TWO_DAM);
+        assertEquals (expectedCoins,vendingMachine.buy (2,listCoins));
     }
 
     @Test
