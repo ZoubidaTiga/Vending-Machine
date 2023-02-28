@@ -14,6 +14,7 @@ import java.util.List;
 public class VendingMachine {
     private HashMap<Product,Integer> products;
     private HashMap<Coin,Integer> coins;
+    private List<Coin> insertedCoins;
 
     public VendingMachine(HashMap<Product,Integer> products, HashMap<Coin,Integer> coins)
     {
@@ -74,6 +75,7 @@ public class VendingMachine {
     }
     public List<Coin> buy(int idOfSelectedProduct, List<Coin> coins) throws NotFoundProductException, ProductSoldOutException, InsufficientChargeException, NotSufficientNumberOfCoinsException {
         Product selectedProduct = Product.getProductById (idOfSelectedProduct);
+        this.insertedCoins=coins;
         Validator validator=new Validator ();
         validator.checkExistenceOfProduct (products,selectedProduct); //validate existence of selected product
         validator.checkSufficientAmount (selectedProduct, coins); //verify if charge is sufficient
@@ -83,15 +85,7 @@ public class VendingMachine {
         return change1.getChange(rest, this.coins);
     }
     public List<Coin> refundButton(){
-        List<Coin> returnCoins= new ArrayList<> ();
-        /*for (int i=0;i<this.insertedCoins.length;i++){
-            while (this.insertedCoins[i]>0)
-            {
-                returnCoins.add (Coin.getCoinByValue (i+1));
-                this.insertedCoins[i]--;
-            }
-        }*/
-        return returnCoins;
+        return this.insertedCoins;
     }
 
     public void reset(){
